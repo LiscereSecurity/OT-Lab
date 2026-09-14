@@ -1,0 +1,61 @@
+!! CSV separator property convertion to "~"
+#id,: Device id, GUID
+#name,: Device name
+#enabled,: Enabled
+#type,: Device Type: FuxaServer | SiemensS7 | OPCUA | BACnet | ModbusRTU | ModbusTCP | WebAPI | MQTTclient | internal | EthernetIP | ADSclient | Gpio | WebCam | MELSEC | REDIS
+#polling,: Polling interval in millisec.
+#property.address,: Device address (IP)
+#property.baudrate,: dynamic property field
+#property.connectionOption,: dynamic property field
+#property.databits,: dynamic property field
+#property.delay,: dynamic property field
+#property.forceFC16,: dynamic property field
+#property.parity,: dynamic property field
+#property.port,: dynamic property field
+#property.rack,: dynamic property field
+#property.slaveid,: dynamic property field
+#property.slot,: dynamic property field
+#property.stopbits,: dynamic property field
+#property.timeout,: dynamic property field
+
+@header,id,name,enabled,type,polling,property.address,property.baudrate,property.connectionOption,property.databits,property.delay,property.forceFC16,property.parity,property.port,property.rack,property.slaveid,property.slot,property.stopbits,property.timeout,
+D@,0,FUXA Server,true,FuxaServer,1000,,,,,,,,,,,,,,
+D@,d_monitor_tank,Monitor,true,ModbusTCP,300,10.30.0.31,9600,TcpPort,8,0,false,None,15020,,1,,1,2000,
+
+#deviceId,:Reference to device
+#id,: Tag id, GUID
+#name,: Tag name
+#label,: Tag label
+#type,: Tag type
+#memaddress,: Address of Tag
+#address,: Tag address
+#divisor,: Value divisor
+#init,: Init value
+#format,: Number of digits after decimal point
+#direction,: GPIO field
+#edge,: GPIO field
+#access,: dynamic tag field
+#description,: dynamic tag field
+#sysType,: dynamic tag field
+#options,: string JSON object
+#daq.enabled,: Daq enabled storage
+#daq.interval,: min storage interval
+#daq.changed,: dynamic daq field
+#daq.restored,: dynamic daq field
+
+@header,deviceId,id,name,label,type,memaddress,address,divisor,init,format,direction,edge,access,description,sysType,options,daq.enabled,daq.interval,daq.changed,daq.restored,
+T@,0,t_monitor_connection_status,Monitor Connection Status,Monitor Connection Status,number,d_monitor_tank,,,,,,,,,1,,false,60,false,false,
+
+T@,d_monitor_tank,t_pump_cmd,PUMP_CMD,,Bool,000000,1,,,,,,readwrite,,,,,,,,
+T@,d_monitor_tank,t_valve_cmd,VALVE_CMD,,Bool,000001,2,,,,,,readwrite,,,,,,,,
+T@,d_monitor_tank,t_alarm_hi_active,ALARM_HI_ACTIVE,,Bool,000002,3,,,,,,readonly,,,,,,,,
+T@,d_monitor_tank,t_alarm_lo_active,ALARM_LO_ACTIVE,,Bool,000003,4,,,,,,readonly,,,,,,,,
+
+T@,d_monitor_tank,t_pump_flow_sp,PUMP_FLOW_SP,,number,400001,1,,,,,,readwrite,,,,,,,,
+T@,d_monitor_tank,t_valve_flow_sp,VALVE_FLOW_SP,,number,400002,2,,,,,,readwrite,,,,,,,,
+T@,d_monitor_tank,t_alarm_hi_sp,ALARM_HI_SP,,number,400003,3,,,,,,readwrite,,,,,,,,
+T@,d_monitor_tank,t_alarm_lo_sp,ALARM_LO_SP,,number,400004,4,,,,,,readwrite,,,,,,,,
+
+T@,d_monitor_tank,t_level_ai,LEVEL_AI,,number,300001,1,,,,,,readonly,,,,,,,,
+T@,d_monitor_tank,t_pump_rate_ai,PUMP_RATE_AI,,number,300002,2,,,,,,readonly,,,,,,,,
+T@,d_monitor_tank,t_valve_rate_ai,VALVE_RATE_AI,,number,300003,3,,,,,,readonly,,,,,,,,

@@ -1,0 +1,42 @@
+{
+  "scenario_id": "SCN-MODBUS-CTX-CONFIG-MAINT-001",
+  "title": "Sensitive configuration write during maintenance",
+  "description": "A client writes to ALARM_HI_SP during an active maintenance window.",
+  "protocol_carrier": "Modbus/TCP",
+  "api_action": {
+    "endpoint": "/api/v2/lab/write-register",
+    "method": "POST",
+    "payload": {
+      "register": 3,
+      "value": 5,
+      "unit_id": 1
+    }
+  },
+  "protocol_operation": {
+    "function": "write_register",
+    "target_register": 3,
+    "value": 5
+  },
+  "industrial_action": {
+    "type": "modify_configuration",
+    "value": 5
+  },
+  "automation_artefact": {
+    "id": "ALARM_HI_SP",
+    "class": "sensitive_configuration",
+    "mapping_confidence": "known",
+    "criticality": "high"
+  },
+  "operational_context": {
+    "operating_mode": "maintenance",
+    "maintenance_status": "in_maintenance",
+    "maintenance_window": true
+  },
+  "policy_constraint": {
+    "id": "OBS-R004",
+    "rule": "Sensitive configuration write permitted during active maintenance window"
+  },
+  "expected_decision": "ALLOW",
+  "expected_rule": "OBS-R004",
+  "rationale": "The same protocol-valid action should be allowed because the monitor context declares an active maintenance window."
+}

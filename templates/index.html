@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OT Lab</title>
+  <link rel="stylesheet" href="/static/style.css?v=20260608policy02" />
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div>
+        <h1>OT Lab</h1>
+        <div class="sub">Process-Aware OT Security Runtime</div>
+      </div>
+      <div class="topbar-right">
+        <div class="mini-badge" id="globalMonitorBadge">MONITOR: STOPPED</div>
+        <div class="mini-badge" id="globalDefenseBadge">DEFENSE: RUNNING</div>
+        <div class="mini-badge" id="globalPlcBadge">PLC: STOPPED</div>
+        <div class="mini-badge" id="globalHmiBadge">HMI: STOPPED</div>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <div class="main-layout">
+        <div class="left-col">
+          <section class="card compact">
+            <div class="card-head">
+              <h2>Local Monitor</h2>
+              <div class="card-tools">
+                <button class="secondary small" id="openMonitorConfigBtn" type="button">Configure</button>
+                <button class="small" id="toggleMonitorRouteBtn" type="button">Monitor ON</button>
+              </div>
+            </div>
+            <div id="agentStatus" class="status slim">-</div>
+          </section>
+
+          <section class="card compact">
+            <div class="card-head">
+              <h2>Connection Flow</h2>
+            </div>
+            <div id="flowPanel" class="flow-panel"></div>
+          </section>
+        </div>
+
+        <div class="right-col">
+          <section class="card events-card">
+            <div class="card-head"><h2>Events</h2></div>
+            <div id="eventsPanel" class="event-summary empty">
+              <div class="event-empty-title">No communication identified</div>
+              <div class="event-empty-subtitle">Waiting for OT/ICS traffic...</div>
+            </div>
+          </section>
+
+          <section class="card alerts-card">
+            <div class="card-head">
+              <h2>Alerts</h2>
+            <div class="card-tools">
+              <button class="secondary small" id="copyAlertsBtn" type="button">Copy Log</button>
+              <button class="secondary small" id="clearAlertsBtn" type="button">Clear</button>
+            </div>
+            </div>
+            <div id="alertsPanel" class="log-panel"></div>
+          </section>
+        </div>
+      </div>
+
+      <section class="card dock-card">
+        <div class="bottom-dock">
+          <button class="dock-btn" id="openNetworkScanBtn" type="button">Network Scan</button>
+          <button class="dock-btn" id="openPolicyDecisionsBtn" type="button">Policy Decisions</button>
+          <button class="dock-btn" id="openPlcUrlBtn" type="button">PLC</button>
+          <button class="dock-btn" id="openHmiUrlBtn" type="button">HMI</button>
+          <button class="dock-btn" id="openAttackBtn" type="button">Attack</button>
+        </div>
+      </section>
+
+      <div class="floating-window quick-config-window attack-config-window hidden" id="scenarioWindow">
+        <div class="window-head">
+          <span>Attack Scenarios</span>
+          <button class="window-close" type="button" data-close-window="scenarioWindow">✕</button>
+        </div>
+        <div class="window-body">
+          <div class="hmi-config-panel">
+            <div class="hmi-config-row">
+              <label>Profile</label>
+              <select id="scenarioProfileSelect">
+                <option value="tank_v1">Tank v1</option>
+                <option value="pumping_line_v1">Pumping Line v1</option>
+              </select>
+            </div>
+            <div class="hmi-config-row">
+              <label>Attack</label>
+              <select id="scenarioAttackSelect"></select>
+            </div>
+            <div class="hmi-config-actions">
+              <button id="runBaselineScenarioBtn" class="small secondary" type="button">Run Baseline</button>
+              <button id="runProtectedScenarioBtn" class="small" type="button">Run Protected</button>
+            </div>
+            <pre id="scenarioResultPanel" class="log-panel floating-panel preview-panel"></pre>
+          </div>
+        </div>
+        <div class="window-resize-handle" aria-hidden="true"></div>
+      </div>
+
+      <div class="floating-window quick-config-window hidden" id="plcConfigWindow">
+        <div class="window-head">
+          <span>PLC Configuration</span>
+          <button class="window-close" type="button" data-close-window="plcConfigWindow">✕</button>
+        </div>
+        <div class="window-body">
+          <div class="hmi-config-panel">
+            <div class="hmi-config-row">
+              <label>PLC IP</label>
+              <input id="plcIpInput" />
+            </div>
+            <div class="hmi-config-row">
+              <label>Modbus Port</label>
+              <input id="plcPortInput" type="number" min="1" max="65535" />
+            </div>
+            <div class="hmi-config-row">
+              <label>OpenPLC URL</label>
+              <input id="plcUiUrlInput" />
+            </div>
+            <div class="hmi-config-actions">
+              <button id="savePlcConfigBtn" class="small secondary" type="button">Save</button>
+              <button id="openPlcFromConfigBtn" class="small" type="button">Open PLC</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="floating-window quick-config-window hidden" id="hmiConfigWindow">
+        <div class="window-head">
+          <span>HMI Configuration</span>
+          <button class="window-close" type="button" data-close-window="hmiConfigWindow">✕</button>
+        </div>
+        <div class="window-body">
+          <div class="hmi-config-panel">
+            <div class="hmi-config-row">
+              <label>HMI IP</label>
+              <input id="hmiIpInput" />
+            </div>
+            <div class="hmi-config-row">
+              <label>HMI Port</label>
+              <input id="hmiPortInput" type="number" min="1" max="65535" />
+            </div>
+            <div class="hmi-config-row">
+              <label>FUXA URL</label>
+              <input id="hmiUiUrlInput" />
+            </div>
+            <div class="hmi-config-actions">
+              <button id="saveHmiConfigBtn" class="small secondary" type="button">Save</button>
+              <button id="openHmiFromConfigBtn" class="small" type="button">Open HMI</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="floating-window hidden" id="labWindow">
+        <div class="window-head">
+          <span>Runtime Lab</span>
+          <button class="window-close" type="button" data-close-window="labWindow">✕</button>
+        </div>
+        <div class="window-body">
+          <div class="hmi-config-panel">
+            <div class="hmi-config-row">
+              <label>PLC Target</label>
+              <div class="hmi-config-inline">
+                <input id="labTargetHost" value="runtime" />
+                <input id="labTargetPort" type="number" min="1" max="65535" value="15020" />
+              </div>
+            </div>
+            <div class="hmi-config-actions">
+              <button id="saveLabTargetBtn" class="small secondary" type="button">Save Target</button>
+              <button id="startOpenPlcBtn" class="small" type="button">Start OpenPLC Runtime</button>
+              <button id="runLabSmokeBtn" class="small secondary" type="button">Run Smoke Test</button>
+            </div>
+            <div class="hmi-config-row">
+              <label>Live HR0</label>
+              <div class="hmi-config-inline">
+                <button id="toggleLabLiveBtn" class="small secondary" type="button">Start Live</button>
+                <div id="labLivePanel" class="status slim">-</div>
+              </div>
+            </div>
+            <div class="hmi-config-row">
+              <label>HMI Switch (COIL0)</label>
+              <div class="hmi-config-inline">
+                <button id="toggleLabSwitchBtn" class="small secondary" type="button">OFF</button>
+                <div id="labSwitchPanel" class="status slim">COIL0 = OFF</div>
+              </div>
+            </div>
+            <div id="labSmokePanel" class="status slim">-</div>
+            <div id="labTopologyPanel" class="log-panel floating-log"></div>
+          </div>
+        </div>
+        <div class="window-resize-handle" aria-hidden="true"></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="floating-window quick-config-window hidden" id="monitorConfigWindow">
+    <div class="window-head">
+      <span>Monitor Configuration</span>
+      <button class="window-close" type="button" data-close-window="monitorConfigWindow">✕</button>
+    </div>
+    <div class="window-body">
+      <div class="hmi-config-panel">
+        <div class="hmi-config-row">
+          <label>Interface</label>
+          <div class="hmi-config-inline">
+            <select id="ifaceSelect"></select>
+            <button type="button" class="secondary small" id="scanIfacesBtn">Scan</button>
+          </div>
+        </div>
+        <div class="hmi-config-row">
+          <label>Operating Mode</label>
+          <select id="monitorOperatingMode">
+            <option value="observe">OBSERVE (passive)</option>
+            <option value="protect">PROTECT (policy enforce)</option>
+          </select>
+        </div>
+        <div class="hmi-config-row">
+          <label>Port Filter</label>
+          <select id="portModeSelect">
+            <option value="MODBUS_PORTS">MODBUS_PORTS</option>
+            <option value="ALL_PORTS">ALL_PORTS</option>
+            <option value="CUSTOM">CUSTOM</option>
+          </select>
+        </div>
+        <div class="hmi-config-row hidden" id="customPortsRow">
+          <label>Custom Ports</label>
+          <input id="customPortsInput" placeholder="e.g. 502,1502,15020" />
+        </div>
+        <div class="hmi-config-row">
+          <label>HMI IP</label>
+          <input id="monitorCtxHmiIpInput" placeholder="10.20.0.21" />
+        </div>
+        <div class="hmi-config-row">
+          <label>PLC IP</label>
+          <input id="monitorCtxPlcIpInput" placeholder="10.20.0.11" />
+        </div>
+        <div class="hmi-config-row">
+          <label>Monitor IP</label>
+          <input id="monitorCtxMonitorIpInput" placeholder="10.30.0.31" />
+        </div>
+        <div class="hmi-config-row">
+          <label>OT / DMZ Subnets</label>
+          <div class="hmi-config-inline">
+            <input id="monitorCtxOtSubnetInput" placeholder="10.20.0.0/24" />
+            <input id="monitorCtxDmzSubnetInput" placeholder="10.30.0.0/24" />
+          </div>
+        </div>
+        <div class="hmi-config-actions">
+          <button id="openTagsMapBtn" class="small secondary" type="button">TAGs</button>
+          <button id="saveMonitorAllBtn" class="small" type="button">Save</button>
+        </div>
+        <div id="monitorConfigStatus" class="inline-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="floating-window quick-config-window hidden" id="tagsMapWindow">
+    <div class="window-head">
+      <span>Monitor TAG Mapping</span>
+      <button class="window-close" type="button" data-close-window="tagsMapWindow">✕</button>
+    </div>
+    <div class="window-body">
+      <div class="hmi-config-panel">
+        <div class="hmi-config-actions">
+          <input id="tagsJsonInput" type="file" accept=".json,application/json" class="hidden" />
+          <button id="uploadTagsJsonBtn" class="small secondary" type="button">Upload FUXA JSON</button>
+          <button id="addTagMapRowBtn" class="small secondary" type="button">Add</button>
+          <button id="saveTagMapBtn" class="small" type="button">Save</button>
+        </div>
+        <div class="tags-map-table-wrap">
+          <table class="tags-map-table">
+            <thead>
+              <tr><th>Location</th><th>Name</th><th></th></tr>
+            </thead>
+            <tbody id="tagsMapRows"></tbody>
+          </table>
+        </div>
+        <div id="tagsMapStatus" class="inline-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="floating-window quick-config-window hidden" id="networkScanWindow">
+    <div class="window-head">
+      <span>Network Scan</span>
+      <div class="window-tools">
+        <button id="runNetworkScanBtn" class="small secondary" type="button">Scan</button>
+        <button class="window-close" type="button" data-close-window="networkScanWindow">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="hmi-config-panel">
+        <div id="networkArchitecturePanel" class="network-architecture">
+          <div class="network-arch-title">Architecture</div>
+          <div class="network-arch-line">OT subnet: -</div>
+          <div class="network-arch-line">DMZ subnet: -</div>
+          <div class="network-arch-line">Monitor interfaces: -</div>
+        </div>
+        <div id="networkScanHosts" class="network-host-list"></div>
+        <div id="networkScanDetails" class="network-scan-details">Click Scan to discover devices.</div>
+      </div>
+    </div>
+    <div class="window-resize-handle" aria-hidden="true"></div>
+  </div>
+
+  <div class="floating-window quick-config-window hidden" id="policyDecisionsWindow">
+    <div class="window-head">
+      <span>Policy Decisions</span>
+      <div class="window-tools">
+        <button id="refreshPolicyDecisionsBtn" class="small secondary" type="button">Refresh</button>
+        <button id="copyPolicyDecisionsBtn" class="small secondary" type="button">Copy</button>
+        <button id="exportPolicyDecisionsBtn" class="small secondary" type="button">Export JSON</button>
+        <button class="window-close" type="button" data-close-window="policyDecisionsWindow">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="policy-summary-strip" id="policyDecisionSummary">No decisions loaded.</div>
+      <div class="policy-table-wrap">
+        <table class="policy-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Decision</th>
+              <th>Rule</th>
+              <th>Asset</th>
+              <th>Value</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="policyDecisionRows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="window-resize-handle" aria-hidden="true"></div>
+  </div>
+
+  <script src="/static/app.js?v=20260608policy02"></script>
+</body>
+</html>

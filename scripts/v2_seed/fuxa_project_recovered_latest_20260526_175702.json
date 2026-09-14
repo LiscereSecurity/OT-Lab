@@ -1,0 +1,155 @@
+{
+    "devices": {
+        "d_monitor_tank": {
+            "id": "d_monitor_tank",
+            "name": "Monitor",
+            "enabled": true,
+            "type": "ModbusTCP",
+            "polling": 300,
+            "property": {
+                "address": "10.30.0.31",
+                "port": 15020,
+                "slaveid": 1,
+                "timeout": 2000,
+                "connectionOption": "TcpPort",
+                "slot": null,
+                "rack": null,
+                "baudrate": 9600,
+                "databits": 8,
+                "stopbits": 1,
+                "parity": "None",
+                "forceFC16": false
+            },
+            "tags": {
+                "t_pump_cmd": {
+                    "id": "t_pump_cmd",
+                    "name": "PUMP_CMD",
+                    "type": "Bool",
+                    "memaddress": "000000",
+                    "address": 1,
+                    "access": "readwrite",
+                    "value": 0
+                },
+                "t_valve_cmd": {
+                    "id": "t_valve_cmd",
+                    "name": "VALVE_CMD",
+                    "type": "Bool",
+                    "memaddress": "000001",
+                    "address": 2,
+                    "access": "readwrite",
+                    "value": 0
+                },
+                "t_alarm_hi_active": {
+                    "id": "t_alarm_hi_active",
+                    "name": "ALARM_HI_ACTIVE",
+                    "type": "Bool",
+                    "memaddress": "000002",
+                    "address": 3,
+                    "access": "readonly",
+                    "value": 0
+                },
+                "t_alarm_lo_active": {
+                    "id": "t_alarm_lo_active",
+                    "name": "ALARM_LO_ACTIVE",
+                    "type": "Bool",
+                    "memaddress": "000003",
+                    "address": 4,
+                    "access": "readonly",
+                    "value": 0
+                },
+                "t_pump_flow_sp": {
+                    "id": "t_pump_flow_sp",
+                    "name": "PUMP_FLOW_SP",
+                    "type": "number",
+                    "memaddress": "400001",
+                    "address": 1,
+                    "access": "readwrite",
+                    "value": 35
+                },
+                "t_valve_flow_sp": {
+                    "id": "t_valve_flow_sp",
+                    "name": "VALVE_FLOW_SP",
+                    "type": "number",
+                    "memaddress": "400002",
+                    "address": 2,
+                    "access": "readwrite",
+                    "value": 20
+                },
+                "t_alarm_hi_sp": {
+                    "id": "t_alarm_hi_sp",
+                    "name": "ALARM_HI_SP",
+                    "type": "number",
+                    "memaddress": "400003",
+                    "address": 3,
+                    "access": "readwrite",
+                    "value": 85
+                },
+                "t_alarm_lo_sp": {
+                    "id": "t_alarm_lo_sp",
+                    "name": "ALARM_LO_SP",
+                    "type": "number",
+                    "memaddress": "400004",
+                    "address": 4,
+                    "access": "readwrite",
+                    "value": 15
+                },
+                "t_level_ai": {
+                    "id": "t_level_ai",
+                    "name": "LEVEL_AI",
+                    "type": "number",
+                    "memaddress": "300001",
+                    "address": 1,
+                    "access": "readonly",
+                    "value": 0
+                },
+                "t_pump_rate_ai": {
+                    "id": "t_pump_rate_ai",
+                    "name": "PUMP_RATE_AI",
+                    "type": "number",
+                    "memaddress": "300002",
+                    "address": 2,
+                    "access": "readonly",
+                    "value": 0
+                },
+                "t_valve_rate_ai": {
+                    "id": "t_valve_rate_ai",
+                    "name": "VALVE_RATE_AI",
+                    "type": "number",
+                    "memaddress": "300003",
+                    "address": 3,
+                    "access": "readonly",
+                    "value": 0
+                }
+            }
+        }
+    },
+    "hmi": {
+        "views": [
+            {
+                "id": "v_tank_main",
+                "name": "TankMain",
+                "profile": {
+                    "width": 1280,
+                    "height": 800,
+                    "bkcolor": "#0b1220ff",
+                    "margin": 10,
+                    "align": "topCenter",
+                    "gridType": "fixed",
+                    "viewRenderDelay": 0
+                },
+                "items": {},
+                "variables": {},
+                "svgcontent": "<svg width=\"1280\" height=\"800\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:svg=\"http://www.w3.org/2000/svg\">\n <g>\n  <title>Layer 1</title>\n  <rect id=\"svg_58fffc6b-bef14f0e\" fill=\"#0b1220\" height=\"800\" width=\"1280\" y=\"0\" x=\"0\"/>\n  <text id=\"svg_85369c75-54864f48\" font-family=\"Arial\" font-size=\"34\" fill=\"#e6eeff\" y=\"58\" x=\"36\">Tank Process v1 (Monitor Routed)</text>\n  <text id=\"svg_4ac6061f-822e439b\" font-family=\"Arial\" font-size=\"18\" fill=\"#9fb6d9\" y=\"96\" x=\"36\">Device: Monitor (10.30.0.31:15020) | Slave: 1 | Protocol: Modbus/TCP</text>\n  <rect id=\"svg_ea11480c-1a884a97\" stroke=\"#2e4264\" fill=\"#101a2d\" rx=\"12\" height=\"642\" width=\"1208\" y=\"126\" x=\"36\"/>\n  <text id=\"svg_57ae900e-a16e4bb6\" font-family=\"Arial\" font-size=\"24\" fill=\"#d7e5ff\" y=\"174\" x=\"66\">Tags Ready</text>\n  <text id=\"svg_4257d0ab-af914470\" font-family=\"Arial\" font-size=\"18\" fill=\"#9fb6d9\" y=\"212\" x=\"66\">PUMP_CMD, VALVE_CMD, LEVEL_AI, PUMP_FLOW_SP, VALVE_FLOW_SP, ALARM_HI_SP, ALARM_LO_SP</text>\n  <text id=\"svg_54856c73-9a294585\" font-family=\"Arial\" font-size=\"18\" fill=\"#9fb6d9\" y=\"244\" x=\"66\">ALARM_HI_ACTIVE, ALARM_LO_ACTIVE, PUMP_RATE_AI, VALVE_RATE_AI</text>\n  <text id=\"svg_448cf98b-33b64cb2\" font-family=\"Arial\" font-size=\"20\" fill=\"#d7e5ff\" y=\"300\" x=\"66\">Next step in FUXA editor:</text>\n  <text id=\"svg_55e898a3-73bf4727\" font-family=\"Arial\" font-size=\"18\" fill=\"#9fb6d9\" y=\"334\" x=\"66\">1) Bind switches to PUMP_CMD and VALVE_CMD</text>\n  <text id=\"svg_2799bc7b-1b8e45ee\" font-family=\"Arial\" font-size=\"18\" fill=\"#9fb6d9\" y=\"364\" x=\"66\">2) Bind sliders/numeric inputs to *_FLOW_SP and ALARM_*_SP</text>\n  <text id=\"svg_c5baa4f7-847446a6\" font-family=\"Arial\" font-size=\"18\" fill=\"#9fb6d9\" y=\"394\" x=\"66\">3) Bind gauge/bar to LEVEL_AI and indicators to ALARM_*_ACTIVE</text>\n </g>\n</svg>",
+                "type": "svg"
+            }
+        ]
+    },
+    "version": "1.00",
+    "server": {
+        "id": "0",
+        "name": "FUXA Server",
+        "type": "FuxaServer",
+        "property": {},
+        "polling": 1000
+    }
+}

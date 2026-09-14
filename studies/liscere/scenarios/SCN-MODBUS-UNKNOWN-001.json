@@ -1,0 +1,44 @@
+{
+  "scenario_id": "SCN-MODBUS-UNKNOWN-001",
+  "title": "Write to unmapped register",
+  "description": "A client writes to a Modbus register that is not mapped to a known process artefact.",
+  "protocol_carrier": "Modbus/TCP",
+  "api_action": {
+    "endpoint": "/api/v2/lab/write-register",
+    "method": "POST",
+    "payload": {
+      "register": 65000,
+      "value": 123,
+      "unit_id": 1
+    }
+  },
+  "protocol_operation": {
+    "function": "write_register",
+    "target_register": 65000,
+    "value": 123
+  },
+  "industrial_action": {
+    "type": "write_unknown_target",
+    "value": 123
+  },
+  "automation_artefact": {
+    "id": "unknown",
+    "class": "unknown",
+    "mapping_confidence": "unknown"
+  },
+  "operational_context": {
+    "operating_mode": "normal_operation",
+    "maintenance_status": "not_in_maintenance"
+  },
+  "policy_constraint": {
+    "id": "OBS-R003",
+    "rule": "write to unmapped or unknown address should alert"
+  },
+  "expected_decision": "ALERT",
+  "expected_rule": "OBS-R003",
+  "framework_interpretation": {
+    "possible_future_decision": "ESCALATE",
+    "note": "ESCALATE should only be used if implemented as a distinct output in OT Lab."
+  },
+  "rationale": "The operation is protocol-valid, but OT Lab cannot determine the affected automation artefact from the available mapping."
+}

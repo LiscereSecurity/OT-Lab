@@ -1,0 +1,57 @@
+{
+  "devices": {
+    "d_openplc": {
+      "id": "d_openplc",
+      "name": "OpenPLC",
+      "enabled": true,
+      "type": "ModbusTCP",
+      "polling": 300,
+      "property": {
+        "address": "openplc",
+        "port": 502,
+        "slaveid": 1,
+        "timeout": 2000,
+        "connectionOption": "TcpPort"
+      },
+      "tags": {
+        "t_switch_coil0": {
+          "id": "t_switch_coil0",
+          "name": "SWITCH",
+          "type": "Bool",
+          "memaddress": "000000",
+          "address": "1",
+          "access": "readwrite"
+        }
+      }
+    }
+  },
+  "hmi": {
+    "views": [
+      {
+        "id": "v_main",
+        "name": "MainView",
+        "profile": {
+          "width": 1024,
+          "height": 768,
+          "bkcolor": "#0b1220ff",
+          "margin": 10,
+          "align": "topCenter",
+          "gridType": "fixed",
+          "viewRenderDelay": 0
+        },
+        "items": {},
+        "variables": {},
+        "svgcontent": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1024\" height=\"768\"><rect x=\"0\" y=\"0\" width=\"1024\" height=\"768\" fill=\"#0b1220\"/><text x=\"40\" y=\"64\" fill=\"#e6eeff\" font-size=\"30\" font-family=\"Arial\">FUXA ↔ OpenPLC BOOL Test</text><text x=\"40\" y=\"108\" fill=\"#9fb6d9\" font-size=\"20\" font-family=\"Arial\">Device: openplc:502 | Tag: SWITCH (coil 1)</text><rect x=\"40\" y=\"146\" width=\"944\" height=\"220\" rx=\"8\" fill=\"#101a2d\" stroke=\"#314460\"/><text x=\"64\" y=\"194\" fill=\"#d7e5ff\" font-size=\"22\" font-family=\"Arial\">Goal</text><text x=\"64\" y=\"232\" fill=\"#9fb6d9\" font-size=\"18\" font-family=\"Arial\">Toggle one BOOL from FUXA and observe QX0.0 in OpenPLC, and vice versa.</text><text x=\"64\" y=\"266\" fill=\"#9fb6d9\" font-size=\"18\" font-family=\"Arial\">Use FUXA editor to bind one switch widget to tag SWITCH.</text></svg>",
+        "type": "svg"
+      }
+    ]
+  },
+  "version": "1.00",
+  "server": {
+    "id": "0",
+    "name": "FUXA Server",
+    "type": "FuxaServer",
+    "property": {},
+    "polling": 1000
+  }
+}

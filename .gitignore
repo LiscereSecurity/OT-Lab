@@ -1,0 +1,29 @@
+# Python caches
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# Test/checkpoint artifacts
+artifacts/
+studies/evidence/liscere_baseline_v0_1/
+studies/evidence/liscere_contextual_v0_1/
+
+# Downloaded/generated agent binaries are published as GitHub release assets.
+downloads/
+
+# Lab state databases (binary, regenerated at runtime - not source)
+*.db
+
+# Lab state backups / snapshots (runtime artifacts, not source)
+scripts/v2_seed/backups/
+
+# PyInstaller build outputs
+build/
+dist/
+*.spec.bak
+
+# Local OS/editor files
+.DS_Store

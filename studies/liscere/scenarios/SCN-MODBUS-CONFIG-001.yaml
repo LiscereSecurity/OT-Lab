@@ -1,0 +1,35 @@
+scenario_id: SCN-MODBUS-CONFIG-001
+title: Sensitive configuration write outside maintenance context
+description: A client writes to a sensitive alarm high setpoint during normal operation.
+protocol_carrier: Modbus/TCP
+api_action:
+  endpoint: /api/v2/lab/write-register
+  method: POST
+  payload:
+    register: 3
+    value: 5
+    unit_id: 1
+protocol_operation:
+  function: write_register
+  target_register: 3
+  value: 5
+industrial_action:
+  type: modify_configuration
+  value: 5
+automation_artefact:
+  id: ALARM_HI_SP
+  class: sensitive_configuration
+  mapping_confidence: known
+  criticality: high
+operational_context:
+  operating_mode: normal_operation
+  maintenance_status: not_in_maintenance
+policy_constraint:
+  id: OBS-R002
+  rule: write to sensitive configuration parameter should alert
+expected_decision: ALERT
+expected_rule: OBS-R002
+framework_interpretation:
+  possible_future_decision: ESCALATE
+  note: ESCALATE should only be used if implemented as a distinct output in OT Lab.
+rationale: The action targets a sensitive configuration artefact. In the current baseline this is expected to alert; future richer context may escalate it.

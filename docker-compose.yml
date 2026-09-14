@@ -1,0 +1,105 @@
+name: ot-lab-v2
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ot-lab-v2-web:dev
+    ports:
+      - "8000:8000"
+    environment:
+      PYTHONUNBUFFERED: "1"
+    networks:
+      ot_net:
+        ipv4_address: ${WEB_OT_IP:-10.20.0.10}
+      dmz_net:
+        ipv4_address: ${WEB_DMZ_IP:-10.30.0.10}
+    restart: unless-stopped
+
+  openplc:
+    image: tuttas/openplc_v3:latest
+    ports:
+      - "${OPENPLC_WEB_PORT:-8081}:8080"
+      - "${OPENPLC_MODBUS_PORT:-1502}:502"
+    volumes:
+      - openplc_data:/root/OpenPLC_v3/webserver
+    networks:
+      ot_net:
+        ipv4_address: ${OPENPLC_OT_IP:-10.20.0.11}
+    restart: unless-stopped
+
+  hmi:
+    build:
+      context: .
+      dockerfile: docker/fuxa.Dockerfile
+    image: ot-lab-v2-fuxa:dev
+    ports:
+      - "1881:1881"
+    volumes:
+      - fuxa_appdata:/usr/src/app/FUXA/server/_appdata
+      - fuxa_db:/usr/src/app/FUXA/server/_db
+      - fuxa_logs:/usr/src/app/FUXA/server/_logs
+      - fuxa_images:/usr/src/app/FUXA/server/_images
+    networks:
+      ot_net:
+        ipv4_address: ${HMI_OT_IP:-10.20.0.21}
+    restart: unless-stopped
+
+  runtime:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ot-lab-v2-web:dev
+    depends_on:
+      - web
+    command:
+      [
+        "python",
+        "scripts/tshark_runtime.py",
+        "--server",
+        "http://web:8000",
+        "--session-id",
+        "sess_v2_docker_local",
+        "--iface",
+        "${RUNTIME_IFACE:-eth0}"
+      ]
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      PYTHONUNBUFFERED: "1"
+      OTLAB_PROXY_ENABLED: "1"
+      OTLAB_PROXY_LISTEN_HOST: "0.0.0.0"
+      OTLAB_PROXY_LISTEN_PORT: "15020"
+      OTLAB_PROXY_UPSTREAM_HOST: "openplc"
+      OTLAB_PROXY_UPSTREAM_PORT: "502"
+    ports:
+      - "${MONITOR_PROXY_PORT:-15020}:15020"
+    networks:
+      ot_net:
+        ipv4_address: ${MONITOR_OT_IP:-10.20.0.31}
+      dmz_net:
+        ipv4_address: ${MONITOR_DMZ_IP:-10.30.0.31}
+    restart: unless-stopped
+
+volumes:
+  openplc_data:
+  fuxa_appdata:
+  fuxa_db:
+  fuxa_logs:
+  fuxa_images:
+
+networks:
+  ot_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${OT_SUBNET:-10.20.0.0/24}
+  dmz_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${DMZ_SUBNET:-10.30.0.0/24}

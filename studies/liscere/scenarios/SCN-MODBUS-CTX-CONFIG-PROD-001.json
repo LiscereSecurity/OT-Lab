@@ -1,0 +1,42 @@
+{
+  "scenario_id": "SCN-MODBUS-CTX-CONFIG-PROD-001",
+  "title": "Sensitive configuration write during normal operation",
+  "description": "A client writes to ALARM_HI_SP outside a maintenance window.",
+  "protocol_carrier": "Modbus/TCP",
+  "api_action": {
+    "endpoint": "/api/v2/lab/write-register",
+    "method": "POST",
+    "payload": {
+      "register": 3,
+      "value": 5,
+      "unit_id": 1
+    }
+  },
+  "protocol_operation": {
+    "function": "write_register",
+    "target_register": 3,
+    "value": 5
+  },
+  "industrial_action": {
+    "type": "modify_configuration",
+    "value": 5
+  },
+  "automation_artefact": {
+    "id": "ALARM_HI_SP",
+    "class": "sensitive_configuration",
+    "mapping_confidence": "known",
+    "criticality": "high"
+  },
+  "operational_context": {
+    "operating_mode": "normal_operation",
+    "maintenance_status": "not_in_maintenance",
+    "maintenance_window": false
+  },
+  "policy_constraint": {
+    "id": "OBS-R002",
+    "rule": "write to sensitive configuration parameter should alert"
+  },
+  "expected_decision": "ALERT",
+  "expected_rule": "OBS-R002",
+  "rationale": "The same protocol-valid action should alert while the monitor context declares no maintenance window."
+}

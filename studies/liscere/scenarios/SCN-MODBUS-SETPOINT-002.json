@@ -1,0 +1,44 @@
+{
+  "scenario_id": "SCN-MODBUS-SETPOINT-002",
+  "title": "Mapped setpoint write outside operational envelope",
+  "description": "A client writes an out-of-range value to a known pump flow setpoint through the monitored Modbus/TCP path.",
+  "protocol_carrier": "Modbus/TCP",
+  "api_action": {
+    "endpoint": "/api/v2/lab/write-register",
+    "method": "POST",
+    "payload": {
+      "register": 1,
+      "value": 150,
+      "unit_id": 1
+    }
+  },
+  "protocol_operation": {
+    "function": "write_register",
+    "target_register": 1,
+    "value": 150
+  },
+  "industrial_action": {
+    "type": "write_setpoint",
+    "value": 150
+  },
+  "automation_artefact": {
+    "id": "PUMP_FLOW_SP",
+    "class": "setpoint",
+    "allowed_range": {
+      "min": 0,
+      "max": 100
+    },
+    "mapping_confidence": "known"
+  },
+  "operational_context": {
+    "operating_mode": "normal_operation",
+    "maintenance_status": "not_in_maintenance"
+  },
+  "policy_constraint": {
+    "id": "OBS-R001",
+    "rule": "write outside declared operational envelope should alert"
+  },
+  "expected_decision": "ALERT",
+  "expected_rule": "OBS-R001",
+  "rationale": "The Modbus operation is protocol-valid, but the value violates the declared operating envelope for the affected setpoint."
+}
