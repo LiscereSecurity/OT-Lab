@@ -8,7 +8,7 @@ tag of the former engine repository, published as a single commit and kept read-
 
 The Liscere observer itself (the passive engine that infers the process state and judges whether
 each supervisory command is coherent with it) is developed privately. Access requests:
-research@liscere.com.
+hello@liscere.com.
 
 This code was published under the MIT licence and remains under it; see [LICENSE](LICENSE).
 
